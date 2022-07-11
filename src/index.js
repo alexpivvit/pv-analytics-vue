@@ -30,5 +30,17 @@ export default {
                 }
             }, {capture: true});
         }
+
+        if (options.trackClicks && click) {
+            window.addEventListener("click", () => {
+                if (Vue.prototype.$pvAnalytics) {
+                    Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {
+                        html: e.target.outerHTML,
+                        class: e.target.className
+                    });
+                }
+            });
+        }
+        window.document.addEventListener("click", (e) => console.log(e.target))
     }
 };

@@ -7,7 +7,8 @@ Vue.use(PvAnalytics, {
     appName: "Test App",
     baseUrl: "https://example.com",
     trackErrors: true,
-    trackLeave: true
+    trackLeave: true,
+    trackClicks: true
 });
 
 new Vue({

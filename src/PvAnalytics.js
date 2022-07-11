@@ -177,7 +177,8 @@ class PvAnalytics {
     }
 }
 
-PvAnalytics.EVENT_TYPE_ERROR = "error";
-PvAnalytics.EVENT_TYPE_LEAVE = "leave";
+PvAnalytics.EVENT_TYPE_ERROR = "_error";
+PvAnalytics.EVENT_TYPE_LEAVE = "_leave";
+PvAnalytics.EVENT_TYPE_CLICK = "_click";
 
 export default PvAnalytics;
