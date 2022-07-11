@@ -16,8 +16,6 @@ new Vue({
             "profileID": 12345
         });
     },
-    render: h => h(App),
-    router,
-    store
+    render: h => h(App)
 }).$mount("#v-app");
 ```
