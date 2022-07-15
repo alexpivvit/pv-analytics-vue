@@ -8,77 +8,77 @@ const SESSION_COOKIE_NAME = "_analytics_sid";
 
 /**
 // session token structure
-const sessionToken = "{appToken}.{timestamp}.{random_string}";
+const session_token = "{app_token}.{timestamp}.{random_string}";
 **/
 
 class PvAnalytics {
     constructor(options = {}) {
-        this._isIncognito = false;
-        this._isInitialized = false;
-        this._eventQueue = [];
+        this._is_incognito = false;
+        this._is_initialized = false;
+        this._event_queue = [];
 
-        if (options.appToken) {
-            this.appToken = options.appToken;
+        if (options.app_token) {
+            this.app_token = options.app_token;
         } else {
-            this._log("'appToken' is invalid");
+            this._log("'app_token' is invalid");
         }
 
-        if (options.appName) {
-            this.appName = options.appName;
+        if (options.app_name) {
+            this.app_name = options.app_name;
         } else {
-            this._log("'appName' is invalid");
+            this._log("'app_name' is invalid");
         }
 
-        if (options.baseUrl) {
-            this.baseUrl = options.baseUrl;
+        if (options.base_url) {
+            this.base_url = options.base_url;
         } else {
-            this._log("'baseUrl' is invalid");
+            this._log("'base_url' is invalid");
         }
     }
 
     init() {
         return detectIncognito()
-            .then((result) => this._isIncognito = result.isPrivate)
+            .then((result) => this._is_incognito = result.isPrivate)
             .then(() => this._startSession())
             .then(() => this._processQueuedEvents())
             .catch((error) => this._log(error));
     }
 
-    event(eventName, userData = {}) {
-        eventName = (eventName || "").trim();
+    event(event_name, user_data = {}) {
+        event_name = (event_name || "").trim();
 
-        if (eventName === "") {
-            this._log("'eventName' is invalid");
+        if (event_name === "") {
+            this._log("'event_name' is invalid");
             return;
         }
 
-        if (typeof userData !== "object") {
-            this._log("'userData' is invalid");
+        if (typeof user_data !== "object") {
+            this._log("'user_data' is invalid");
             return;
         }
 
-        if (this._isInitialized) {
-            this._sendEvent(eventName, userData);
+        if (this._is_initialized) {
+            this._sendEvent(event_name, user_data);
         } else {
-            this._eventQueue.push({eventName, userData});
+            this._event_queue.push({event_name, user_data});
         }
     }
 
     _processQueuedEvents() {
-        while (this._eventQueue.length > 0) {
-            const event = this._eventQueue.shift();
-            this._sendEvent(event.eventName, event.userData);
+        while (this._event_queue.length > 0) {
+            const event = this._event_queue.shift();
+            this._sendEvent(event.event_name, event.user_data);
         }
     }
 
     _startSession() {
-        const sessionToken = this._getSessionToken();
+        const session_token = this._getSessionToken();
 
-        if (sessionToken) {
-            const parts = atob(sessionToken).split(".");
+        if (session_token) {
+            const parts = atob(session_token).split(".");
 
-            if (parts.length === 3 && parts[0] === this.appToken) {
-                this._isInitialized = true;
+            if (parts.length === 3 && parts[0] === this.app_token) {
+                this._is_initialized = true;
                 return;
             } else {
                 this._endSession();
@@ -86,21 +86,21 @@ class PvAnalytics {
         }
 
         const params = {
-            appToken: this.appToken,
-            appName: this.appName
+            app_token: this.app_token,
+            app_name: this.app_name
         };
 
-        return axios.post(`${this.baseUrl}/session-start`, params)
+        return axios.post(`${this.base_url}/session-start`, params)
             .then((response) => {
                 if (response.data) {
-                    this._isInitialized = !!response.data.sessionToken;
-                    cookie.set(SESSION_COOKIE_NAME, response.data.sessionToken);
+                    this._is_initialized = !!response.data.session_token;
+                    cookie.set(SESSION_COOKIE_NAME, response.data.session_token);
                 }
             });
     }
 
     _endSession() {
-        this._isInitialized = false;
+        this._is_initialized = false;
         cookie.remove(SESSION_COOKIE_NAME);
     }
 
@@ -108,26 +108,26 @@ class PvAnalytics {
         return cookie.get(SESSION_COOKIE_NAME);
     }
 
-    _sendEvent(eventName, userData = {}) {
+    _sendEvent(event_name, user_data = {}) {
         const params = {
-            sessionToken: this._getSessionToken(),
-            eventName,
+            session_token: this._getSessionToken(),
+            event_name,
             browser: this._getBrowserDetails(),
-            timeStamp: (new Date()).getTime(),
-            timeZone: this._getTimeZone(),
-            pageUrl: this._getPageUrl(),
-            referringUrl: this._getReferringUrl(),
-            isIncognito: this._isIncognito,
-            userData
+            timestamp: (new Date()).getTime(),
+            timezone: this._getTimeZone(),
+            page_url: this._getPageUrl(),
+            referring_url: this._getReferringUrl(),
+            is_incognito: this._is_incognito,
+            user_data
         };
 
-        const pageLoadTime = this._pageLoadTime();
+        const page_load_time = this._pageLoadTime();
 
-        if (pageLoadTime > 0) {
-            params.pageLoadTime = pageLoadTime;
+        if (page_load_time > 0) {
+            params.page_load_time = page_load_time;
         }
 
-        return axios.post(`${this.baseUrl}/event`, params)
+        return axios.post(`${this.base_url}/event`, params)
             .catch((error) => this._log(error));
     }
 
