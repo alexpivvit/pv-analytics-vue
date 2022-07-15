@@ -6,7 +6,7 @@ export default {
         Vue.prototype.$pvAnalytics = new PvAnalytics(options);
         Vue.prototype.$pvAnalytics.init();
 
-        if (options.trackErrors) {
+        if (options.track_errors) {
             Vue.mixin({
                 errorCaptured(err, vm, info) {
                     if (Vue.prototype.$pvAnalytics) {
@@ -23,7 +23,7 @@ export default {
             });
         }
 
-        if (options.trackLeave && window) {
+        if (options.track_leave && window) {
             window.addEventListener("beforeunload", () => {
                 if (Vue.prototype.$pvAnalytics) {
                     Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_LEAVE);
@@ -31,7 +31,7 @@ export default {
             }, {capture: true});
         }
 
-        if (options.trackClicks && click) {
+        if (options.track_clicks && click) {
             window.addEventListener("click", () => {
                 if (Vue.prototype.$pvAnalytics) {
                     Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {
@@ -41,6 +41,5 @@ export default {
                 }
             });
         }
-        window.document.addEventListener("click", (e) => console.log(e.target))
     }
 };

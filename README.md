@@ -3,18 +3,18 @@
 import PvAnalytics from "pv-analytics";
 
 Vue.use(PvAnalytics, {
-    appToken: "test-token",
-    appName: "Test App",
-    baseUrl: "https://example.com",
-    trackErrors: true,
-    trackLeave: true,
-    trackClicks: true
+    app_token: "test-token",
+    app_name: "Test App",
+    base_url: "https://example.com",
+    track_errors: true,
+    track_leave: true,
+    track_clicks: true
 });
 
 new Vue({
     mounted() {
         this.$pvAnalytics.event("test", {
-            "profileID": 12345
+            "profile_id": 12345
         });
     },
     render: h => h(App)
