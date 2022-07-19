@@ -32,7 +32,7 @@ export default {
         }
 
         if (options.track_clicks && typeof window === "object") {
-            window.addEventListener("click", () => {
+            window.addEventListener("click", (e) => {
                 if (Vue.prototype.$pvAnalytics) {
                     Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {
                         html: e.target.outerHTML,

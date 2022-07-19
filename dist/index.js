@@ -334,7 +334,7 @@ var index = {
     }
 
     if (options.track_clicks && (typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") {
-      window.addEventListener("click", function () {
+      window.addEventListener("click", function (e) {
         if (Vue.prototype.$pvAnalytics) {
           Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {
             html: e.target.outerHTML,
