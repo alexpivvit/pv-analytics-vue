@@ -105,7 +105,7 @@ var PvAnalytics = /*#__PURE__*/function () {
       return;
     }
 
-    this._is_enabled = true;
+    this._is_enabled = !!window;
   }
 
   _createClass(PvAnalytics, [{
@@ -333,7 +333,7 @@ var index = {
       });
     }
 
-    if (options.track_clicks && click) {
+    if (options.track_clicks && window) {
       window.addEventListener("click", function () {
         if (Vue.prototype.$pvAnalytics) {
           Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {

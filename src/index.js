@@ -31,7 +31,7 @@ export default {
             }, {capture: true});
         }
 
-        if (options.track_clicks && click) {
+        if (options.track_clicks && window) {
             window.addEventListener("click", () => {
                 if (Vue.prototype.$pvAnalytics) {
                     Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {

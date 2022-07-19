@@ -39,7 +39,7 @@ class PvAnalytics {
             return;
         }
 
-        this._is_enabled = true;
+        this._is_enabled = !!window;
     }
 
     init() {
