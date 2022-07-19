@@ -13,6 +13,7 @@ const session_token = "{app_token}.{timestamp}.{random_string}";
 
 class PvAnalytics {
     constructor(options = {}) {
+        this._is_enabled = false;
         this._is_incognito = false;
         this._is_initialized = false;
         this._event_queue = [];
@@ -21,22 +22,32 @@ class PvAnalytics {
             this.app_token = options.app_token;
         } else {
             this._log("'app_token' is invalid");
+            return;
         }
 
         if (options.app_name) {
             this.app_name = options.app_name;
         } else {
             this._log("'app_name' is invalid");
+            return;
         }
 
         if (options.base_url) {
             this.base_url = options.base_url;
         } else {
             this._log("'base_url' is invalid");
+            return;
         }
+
+        this._is_enabled = true;
     }
 
     init() {
+        if (!this._is_enabled) {
+            this._log("service is disabled");
+            return new Promise((resolve) => resolve());
+        }
+
         return detectIncognito()
             .then((result) => this._is_incognito = result.isPrivate)
             .then(() => this._startSession())
@@ -54,6 +65,11 @@ class PvAnalytics {
 
         if (typeof user_data !== "object") {
             this._log("'user_data' is invalid");
+            return;
+        }
+
+        if (!this._is_enabled) {
+            this._log("service is disabled");
             return;
         }
 
