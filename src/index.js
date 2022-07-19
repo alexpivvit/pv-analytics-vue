@@ -23,7 +23,7 @@ export default {
             });
         }
 
-        if (options.track_leave && window) {
+        if (options.track_leave && typeof window === "object") {
             window.addEventListener("beforeunload", () => {
                 if (Vue.prototype.$pvAnalytics) {
                     Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_LEAVE);
@@ -31,7 +31,7 @@ export default {
             }, {capture: true});
         }
 
-        if (options.track_clicks && window) {
+        if (options.track_clicks && typeof window === "object") {
             window.addEventListener("click", () => {
                 if (Vue.prototype.$pvAnalytics) {
                     Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {

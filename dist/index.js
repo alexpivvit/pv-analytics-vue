@@ -105,7 +105,7 @@ var PvAnalytics = /*#__PURE__*/function () {
       return;
     }
 
-    this._is_enabled = !!window;
+    this._is_enabled = (typeof window === "undefined" ? "undefined" : _typeof(window)) === "object";
   }
 
   _createClass(PvAnalytics, [{
@@ -244,7 +244,7 @@ var PvAnalytics = /*#__PURE__*/function () {
   }, {
     key: "_pageLoadTime",
     value: function _pageLoadTime() {
-      if (window && window.performance && window.performance.timing) {
+      if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object" && window.performance && window.performance.timing) {
         return window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
       }
 
@@ -253,7 +253,7 @@ var PvAnalytics = /*#__PURE__*/function () {
   }, {
     key: "_getBrowserDetails",
     value: function _getBrowserDetails() {
-      if (window && window.navigator) {
+      if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") {
         return Bowser__namespace.getParser(window.navigator.userAgent).getResult();
       }
 
@@ -271,7 +271,7 @@ var PvAnalytics = /*#__PURE__*/function () {
   }, {
     key: "_getPageUrl",
     value: function _getPageUrl() {
-      if (window) {
+      if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") {
         return window.location.href;
       }
 
@@ -323,7 +323,7 @@ var index = {
       });
     }
 
-    if (options.track_leave && window) {
+    if (options.track_leave && (typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") {
       window.addEventListener("beforeunload", function () {
         if (Vue.prototype.$pvAnalytics) {
           Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_LEAVE);
@@ -333,7 +333,7 @@ var index = {
       });
     }
 
-    if (options.track_clicks && window) {
+    if (options.track_clicks && (typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") {
       window.addEventListener("click", function () {
         if (Vue.prototype.$pvAnalytics) {
           Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {

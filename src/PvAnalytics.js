@@ -39,7 +39,7 @@ class PvAnalytics {
             return;
         }
 
-        this._is_enabled = !!window;
+        this._is_enabled = typeof window === "object";
     }
 
     init() {
@@ -148,7 +148,7 @@ class PvAnalytics {
     }
 
     _pageLoadTime() {
-        if (window && window.performance && window.performance.timing) {
+        if (typeof window === "object" && window.performance && window.performance.timing) {
             return window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
         }
 
@@ -156,7 +156,7 @@ class PvAnalytics {
     }
 
     _getBrowserDetails() {
-        if (window && window.navigator) {
+        if (typeof window === "object") {
             return Bowser.getParser(window.navigator.userAgent)
                 .getResult();
         }
@@ -173,7 +173,7 @@ class PvAnalytics {
     }
 
     _getPageUrl() {
-        if (window) {
+        if (typeof window === "object") {
             return window.location.href;
         }
 
