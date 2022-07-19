@@ -196,9 +196,13 @@ var PvAnalytics = /*#__PURE__*/function () {
         app_name: this.app_name
       };
       return axios__namespace.post("".concat(this.base_url, "/session-start"), params).then(function (response) {
-        if (response.data) {
-          _this2._is_initialized = !!response.data.session_token;
-          cookie__default["default"].set(SESSION_COOKIE_NAME, response.data.session_token);
+        if (response.data.status) {
+          var _session_token = response.data.data.session_token;
+
+          if (_session_token) {
+            _this2._is_initialized = true;
+            cookie__default["default"].set(SESSION_COOKIE_NAME, _session_token);
+          }
         }
       });
     }

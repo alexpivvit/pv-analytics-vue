@@ -108,10 +108,22 @@ class PvAnalytics {
 
         return axios.post(`${this.base_url}/session-start`, params)
             .then((response) => {
-                if (response.data) {
-                    this._is_initialized = !!response.data.session_token;
-                    cookie.set(SESSION_COOKIE_NAME, response.data.session_token);
+                if (response.data.status) {
+                    const session_token = response.data.data.session_token;
+
+                    if (session_token) {
+                        this._is_initialized = true;
+                        cookie.set(SESSION_COOKIE_NAME, session_token);
+                    } else {
+                        this._endSession();
+                    }
+                } else {
+                    this._endSession();
                 }
+            })
+            .catch((error) => {
+                this._endSession();
+                this._log(error);
             });
     }
 
