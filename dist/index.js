@@ -67,7 +67,7 @@ function _createClass(Constructor, protoProps, staticProps) {
 var SESSION_COOKIE_NAME = "_analytics_sid";
 /**
 // session token structure
-const sessionToken = "{appToken}.{timestamp}.{random_string}";
+const session_token = "{app_token}.{timestamp}.{random_string}";
 **/
 
 var PvAnalytics = /*#__PURE__*/function () {
@@ -76,27 +76,36 @@ var PvAnalytics = /*#__PURE__*/function () {
 
     _classCallCheck(this, PvAnalytics);
 
-    this._isIncognito = false;
-    this._isInitialized = false;
-    this._eventQueue = [];
+    this._is_enabled = false;
+    this._is_incognito = false;
+    this._is_initialized = false;
+    this._event_queue = [];
 
-    if (options.appToken) {
-      this.appToken = options.appToken;
+    if (options.app_token) {
+      this.app_token = options.app_token;
     } else {
-      this._log("'appToken' is invalid");
+      this._log("'app_token' is invalid");
+
+      return;
     }
 
-    if (options.appName) {
-      this.appName = options.appName;
+    if (options.app_name) {
+      this.app_name = options.app_name;
     } else {
-      this._log("'appName' is invalid");
+      this._log("'app_name' is invalid");
+
+      return;
     }
 
-    if (options.baseUrl) {
-      this.baseUrl = options.baseUrl;
+    if (options.base_url) {
+      this.base_url = options.base_url;
     } else {
-      this._log("'baseUrl' is invalid");
+      this._log("'base_url' is invalid");
+
+      return;
     }
+
+    this._is_enabled = true;
   }
 
   _createClass(PvAnalytics, [{
@@ -104,8 +113,16 @@ var PvAnalytics = /*#__PURE__*/function () {
     value: function init() {
       var _this = this;
 
+      if (!this._is_enabled) {
+        this._log("service is disabled");
+
+        return new Promise(function (resolve) {
+          return resolve();
+        });
+      }
+
       return detectIncognito.detectIncognito().then(function (result) {
-        return _this._isIncognito = result.isPrivate;
+        return _this._is_incognito = result.isPrivate;
       }).then(function () {
         return _this._startSession();
       }).then(function () {
@@ -116,38 +133,44 @@ var PvAnalytics = /*#__PURE__*/function () {
     }
   }, {
     key: "event",
-    value: function event(eventName) {
-      var userData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      eventName = (eventName || "").trim();
+    value: function event(event_name) {
+      var user_data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      event_name = (event_name || "").trim();
 
-      if (eventName === "") {
-        this._log("'eventName' is invalid");
-
-        return;
-      }
-
-      if (_typeof(userData) !== "object") {
-        this._log("'userData' is invalid");
+      if (event_name === "") {
+        this._log("'event_name' is invalid");
 
         return;
       }
 
-      if (this._isInitialized) {
-        this._sendEvent(eventName, userData);
+      if (_typeof(user_data) !== "object") {
+        this._log("'user_data' is invalid");
+
+        return;
+      }
+
+      if (!this._is_enabled) {
+        this._log("service is disabled");
+
+        return;
+      }
+
+      if (this._is_initialized) {
+        this._sendEvent(event_name, user_data);
       } else {
-        this._eventQueue.push({
-          eventName: eventName,
-          userData: userData
+        this._event_queue.push({
+          event_name: event_name,
+          user_data: user_data
         });
       }
     }
   }, {
     key: "_processQueuedEvents",
     value: function _processQueuedEvents() {
-      while (this._eventQueue.length > 0) {
-        var event = this._eventQueue.shift();
+      while (this._event_queue.length > 0) {
+        var event = this._event_queue.shift();
 
-        this._sendEvent(event.eventName, event.userData);
+        this._sendEvent(event.event_name, event.user_data);
       }
     }
   }, {
@@ -155,13 +178,13 @@ var PvAnalytics = /*#__PURE__*/function () {
     value: function _startSession() {
       var _this2 = this;
 
-      var sessionToken = this._getSessionToken();
+      var session_token = this._getSessionToken();
 
-      if (sessionToken) {
-        var parts = atob(sessionToken).split(".");
+      if (session_token) {
+        var parts = atob(session_token).split(".");
 
-        if (parts.length === 3 && parts[0] === this.appToken) {
-          this._isInitialized = true;
+        if (parts.length === 3 && parts[0] === this.app_token) {
+          this._is_initialized = true;
           return;
         } else {
           this._endSession();
@@ -169,20 +192,20 @@ var PvAnalytics = /*#__PURE__*/function () {
       }
 
       var params = {
-        appToken: this.appToken,
-        appName: this.appName
+        app_token: this.app_token,
+        app_name: this.app_name
       };
-      return axios__namespace.post("".concat(this.baseUrl, "/session-start"), params).then(function (response) {
+      return axios__namespace.post("".concat(this.base_url, "/session-start"), params).then(function (response) {
         if (response.data) {
-          _this2._isInitialized = !!response.data.sessionToken;
-          cookie__default["default"].set(SESSION_COOKIE_NAME, response.data.sessionToken);
+          _this2._is_initialized = !!response.data.session_token;
+          cookie__default["default"].set(SESSION_COOKIE_NAME, response.data.session_token);
         }
       });
     }
   }, {
     key: "_endSession",
     value: function _endSession() {
-      this._isInitialized = false;
+      this._is_initialized = false;
       cookie__default["default"].remove(SESSION_COOKIE_NAME);
     }
   }, {
@@ -192,29 +215,29 @@ var PvAnalytics = /*#__PURE__*/function () {
     }
   }, {
     key: "_sendEvent",
-    value: function _sendEvent(eventName) {
+    value: function _sendEvent(event_name) {
       var _this3 = this;
 
-      var userData = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var user_data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var params = {
-        sessionToken: this._getSessionToken(),
-        eventName: eventName,
+        session_token: this._getSessionToken(),
+        event_name: event_name,
         browser: this._getBrowserDetails(),
-        timeStamp: new Date().getTime(),
-        timeZone: this._getTimeZone(),
-        pageUrl: this._getPageUrl(),
-        referringUrl: this._getReferringUrl(),
-        isIncognito: this._isIncognito,
-        userData: userData
+        timestamp: new Date().getTime(),
+        timezone: this._getTimeZone(),
+        page_url: this._getPageUrl(),
+        referring_url: this._getReferringUrl(),
+        is_incognito: this._is_incognito,
+        user_data: user_data
       };
 
-      var pageLoadTime = this._pageLoadTime();
+      var page_load_time = this._pageLoadTime();
 
-      if (pageLoadTime > 0) {
-        params.pageLoadTime = pageLoadTime;
+      if (page_load_time > 0) {
+        params.page_load_time = page_load_time;
       }
 
-      return axios__namespace.post("".concat(this.baseUrl, "/event"), params)["catch"](function (error) {
+      return axios__namespace.post("".concat(this.base_url, "/event"), params)["catch"](function (error) {
         return _this3._log(error);
       });
     }
@@ -273,8 +296,9 @@ var PvAnalytics = /*#__PURE__*/function () {
   return PvAnalytics;
 }();
 
-PvAnalytics.EVENT_TYPE_ERROR = "error";
-PvAnalytics.EVENT_TYPE_LEAVE = "leave";
+PvAnalytics.EVENT_TYPE_ERROR = "_error";
+PvAnalytics.EVENT_TYPE_LEAVE = "_leave";
+PvAnalytics.EVENT_TYPE_CLICK = "_click";
 
 var index = {
   install: function install(Vue) {
@@ -282,7 +306,7 @@ var index = {
     Vue.prototype.$pvAnalytics = new PvAnalytics(options);
     Vue.prototype.$pvAnalytics.init();
 
-    if (options.trackErrors) {
+    if (options.track_errors) {
       Vue.mixin({
         errorCaptured: function errorCaptured(err, vm, info) {
           if (Vue.prototype.$pvAnalytics) {
@@ -299,13 +323,24 @@ var index = {
       });
     }
 
-    if (options.trackLeave && window) {
+    if (options.track_leave && window) {
       window.addEventListener("beforeunload", function () {
         if (Vue.prototype.$pvAnalytics) {
           Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_LEAVE);
         }
       }, {
         capture: true
+      });
+    }
+
+    if (options.track_clicks && click) {
+      window.addEventListener("click", function () {
+        if (Vue.prototype.$pvAnalytics) {
+          Vue.prototype.$pvAnalytics.event(PvAnalytics.EVENT_TYPE_CLICK, {
+            html: e.target.outerHTML,
+            "class": e.target.className
+          });
+        }
       });
     }
   }
