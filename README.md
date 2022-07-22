@@ -8,7 +8,8 @@ Vue.use(PvAnalytics, {
     base_url: "https://example.com",
     track_errors: true,
     track_leave: true,
-    track_clicks: true
+    track_clicks: true,
+    debug: true
 });
 
 new Vue({
