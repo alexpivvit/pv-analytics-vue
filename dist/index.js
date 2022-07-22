@@ -76,6 +76,7 @@ var PvAnalytics = /*#__PURE__*/function () {
 
     _classCallCheck(this, PvAnalytics);
 
+    this._debug = !!options.debug;
     this._is_enabled = false;
     this._is_incognito = false;
     this._is_initialized = false;
@@ -202,8 +203,16 @@ var PvAnalytics = /*#__PURE__*/function () {
           if (_session_token) {
             _this2._is_initialized = true;
             cookie__default["default"].set(SESSION_COOKIE_NAME, _session_token);
+          } else {
+            _this2._endSession();
           }
+        } else {
+          _this2._endSession();
         }
+      })["catch"](function (error) {
+        _this2._endSession();
+
+        _this2._log(error);
       });
     }
   }, {
@@ -293,7 +302,9 @@ var PvAnalytics = /*#__PURE__*/function () {
   }, {
     key: "_log",
     value: function _log(msg) {
-      console.error("[PvAnalytics] ".concat(msg));
+      if (this._debug) {
+        console.error("[PvAnalytics] ".concat(msg));
+      }
     }
   }]);
 

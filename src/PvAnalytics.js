@@ -13,6 +13,7 @@ const session_token = "{app_token}.{timestamp}.{random_string}";
 
 class PvAnalytics {
     constructor(options = {}) {
+        this._debug = !!options.debug;
         this._is_enabled = false;
         this._is_incognito = false;
         this._is_initialized = false;
@@ -201,7 +202,9 @@ class PvAnalytics {
     }
 
     _log(msg) {
-        console.error(`[PvAnalytics] ${msg}`);
+        if (this._debug) {
+            console.error(`[PvAnalytics] ${msg}`);
+        }
     }
 }
 
