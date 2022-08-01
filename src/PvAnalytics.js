@@ -3,6 +3,7 @@ import {detectIncognito} from "detect-incognito";
 import * as Bowser from "bowser";
 import * as axios from "axios";
 import cookie from "js-cookie";
+import _ from "lodash";
 
 const SESSION_COOKIE_NAME = "_analytics_sid";
 
@@ -13,6 +14,7 @@ const session_token = "{app_token}.{timestamp}.{random_string}";
 
 class PvAnalytics {
     constructor(options = {}) {
+        this._defaults = {};
         this._debug = !!options.debug;
         this._is_enabled = false;
         this._is_incognito = false;
@@ -54,6 +56,10 @@ class PvAnalytics {
             .then(() => this._startSession())
             .then(() => this._processQueuedEvents())
             .catch((error) => this._log(error));
+    }
+
+    setDefaults(defaults = {}) {
+        this._defaults = defaults;
     }
 
     event(event_name, user_data = {}) {
@@ -138,7 +144,7 @@ class PvAnalytics {
     }
 
     _sendEvent(event_name, user_data = {}) {
-        const params = {
+        const params = _.extend({}, this._defaults, {
             session_token: this._getSessionToken(),
             event_name,
             browser: this._getBrowserDetails(),
@@ -148,7 +154,7 @@ class PvAnalytics {
             referring_url: this._getReferringUrl(),
             is_incognito: this._is_incognito,
             user_data
-        };
+        });
 
         const page_load_time = this._pageLoadTime();
 

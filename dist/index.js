@@ -4,6 +4,7 @@ var detectIncognito = require('detect-incognito');
 var Bowser = require('bowser');
 var axios = require('axios');
 var cookie = require('js-cookie');
+var _ = require('lodash');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -28,6 +29,7 @@ function _interopNamespace(e) {
 var Bowser__namespace = /*#__PURE__*/_interopNamespace(Bowser);
 var axios__namespace = /*#__PURE__*/_interopNamespace(axios);
 var cookie__default = /*#__PURE__*/_interopDefaultLegacy(cookie);
+var ___default = /*#__PURE__*/_interopDefaultLegacy(_);
 
 function _typeof(obj) {
   "@babel/helpers - typeof";
@@ -76,6 +78,7 @@ var PvAnalytics = /*#__PURE__*/function () {
 
     _classCallCheck(this, PvAnalytics);
 
+    this._defaults = {};
     this._debug = !!options.debug;
     this._is_enabled = false;
     this._is_incognito = false;
@@ -131,6 +134,12 @@ var PvAnalytics = /*#__PURE__*/function () {
       })["catch"](function (error) {
         return _this._log(error);
       });
+    }
+  }, {
+    key: "setDefaults",
+    value: function setDefaults() {
+      var defaults = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      this._defaults = defaults;
     }
   }, {
     key: "event",
@@ -232,7 +241,8 @@ var PvAnalytics = /*#__PURE__*/function () {
       var _this3 = this;
 
       var user_data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var params = {
+
+      var params = ___default["default"].extend({}, this._defaults, {
         session_token: this._getSessionToken(),
         event_name: event_name,
         browser: this._getBrowserDetails(),
@@ -242,7 +252,7 @@ var PvAnalytics = /*#__PURE__*/function () {
         referring_url: this._getReferringUrl(),
         is_incognito: this._is_incognito,
         user_data: user_data
-      };
+      });
 
       var page_load_time = this._pageLoadTime();
 
