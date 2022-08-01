@@ -150,7 +150,7 @@ class PvAnalytics {
             browser: this._getBrowserDetails(),
             timestamp: (new Date()).getTime(),
             timezone: this._getTimeZone(),
-            page_url: this._getPageUrl(),
+            page_location: this._getPageUrl(),
             referring_url: this._getReferringUrl(),
             is_incognito: this._is_incognito,
             user_data
