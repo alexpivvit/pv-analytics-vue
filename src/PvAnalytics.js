@@ -12,18 +12,6 @@ const SESSION_COOKIE_NAME = "_analytics_sid";
 const session_token = "{app_token}.{timestamp}.{random_string}";
 **/
 
-function _isValidHttpUrl(string) {
-    let url;
-    
-    try {
-      url = new URL(string);
-    } catch (_) {
-      return false;  
-    }
-  
-    return url.protocol === "http:" || url.protocol === "https:";
-}
-
 class PvAnalytics {
     constructor(options = {}) {
         this._app = options.app;
@@ -247,6 +235,18 @@ class PvAnalytics {
         if (this._debug) {
             console.error(`[PvAnalytics] ${msg}`);
         }
+    }
+
+    _isValidHttpUrl(string) {
+        let url;
+        
+        try {
+          url = new URL(string);
+        } catch (_) {
+          return false;  
+        }
+      
+        return url.protocol === "http:" || url.protocol === "https:";
     }
 }
 

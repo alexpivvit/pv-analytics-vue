@@ -67,6 +67,10 @@ function _createClass(Constructor, protoProps, staticProps) {
 }
 
 var SESSION_COOKIE_NAME = "_analytics_sid";
+/**
+// session token structure
+const session_token = "{app_token}.{timestamp}.{random_string}";
+**/
 
 var PvAnalytics = /*#__PURE__*/function () {
   function PvAnalytics() {
@@ -334,6 +338,19 @@ var PvAnalytics = /*#__PURE__*/function () {
       if (this._debug) {
         console.error("[PvAnalytics] ".concat(msg));
       }
+    }
+  }, {
+    key: "_isValidHttpUrl",
+    value: function _isValidHttpUrl(string) {
+      var url;
+
+      try {
+        url = new URL(string);
+      } catch (_) {
+        return false;
+      }
+
+      return url.protocol === "http:" || url.protocol === "https:";
     }
   }]);
 
