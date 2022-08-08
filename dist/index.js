@@ -67,10 +67,6 @@ function _createClass(Constructor, protoProps, staticProps) {
 }
 
 var SESSION_COOKIE_NAME = "_analytics_sid";
-/**
-// session token structure
-const session_token = "{app_token}.{timestamp}.{random_string}";
-**/
 
 var PvAnalytics = /*#__PURE__*/function () {
   function PvAnalytics() {
@@ -322,7 +318,7 @@ var PvAnalytics = /*#__PURE__*/function () {
   }, {
     key: "_getReferringUrl",
     value: function _getReferringUrl() {
-      if (this._app && this._app.$route && this._app.$route.query.referrer) {
+      if (this._app && this._app.$route && this._isValidHttpUrl(this._app.$route.query.referrer)) {
         return this._app.$route.query.referrer;
       }
 

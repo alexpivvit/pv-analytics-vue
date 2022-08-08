@@ -12,6 +12,18 @@ const SESSION_COOKIE_NAME = "_analytics_sid";
 const session_token = "{app_token}.{timestamp}.{random_string}";
 **/
 
+function _isValidHttpUrl(string) {
+    let url;
+    
+    try {
+      url = new URL(string);
+    } catch (_) {
+      return false;  
+    }
+  
+    return url.protocol === "http:" || url.protocol === "https:";
+}
+
 class PvAnalytics {
     constructor(options = {}) {
         this._app = options.app;
@@ -219,7 +231,7 @@ class PvAnalytics {
     _getReferringUrl() {
         if (this._app &&
             this._app.$route &&
-            this._app.$route.query.referrer
+            this._isValidHttpUrl(this._app.$route.query.referrer)
         ) {
             return this._app.$route.query.referrer;
         }
