@@ -78,7 +78,7 @@ var PvAnalytics = /*#__PURE__*/function () {
 
     _classCallCheck(this, PvAnalytics);
 
-    this._app = opitons.app;
+    this._app = options.app;
     this._defaults = {};
     this._debug = !!options.debug;
     this._is_enabled = false;

@@ -14,7 +14,7 @@ const session_token = "{app_token}.{timestamp}.{random_string}";
 
 class PvAnalytics {
     constructor(options = {}) {
-        this._app = opitons.app;
+        this._app = options.app;
         this._defaults = {};
         this._debug = !!options.debug;
         this._is_enabled = false;
