@@ -14,6 +14,7 @@ const session_token = "{app_token}.{timestamp}.{random_string}";
 
 class PvAnalytics {
     constructor(options = {}) {
+        this._app = opitons.app;
         this._defaults = {};
         this._debug = !!options.debug;
         this._is_enabled = false;
@@ -87,6 +88,10 @@ class PvAnalytics {
         }
     }
 
+    getSessionToken() {
+        return cookie.get(SESSION_COOKIE_NAME);
+    }
+
     _processQueuedEvents() {
         while (this._event_queue.length > 0) {
             const event = this._event_queue.shift();
@@ -95,7 +100,7 @@ class PvAnalytics {
     }
 
     _startSession() {
-        const session_token = this._getSessionToken();
+        const session_token = this.getSessionToken();
 
         if (session_token) {
             const parts = atob(session_token).split(".");
@@ -139,13 +144,9 @@ class PvAnalytics {
         cookie.remove(SESSION_COOKIE_NAME);
     }
 
-    _getSessionToken() {
-        return cookie.get(SESSION_COOKIE_NAME);
-    }
-
     _sendEvent(event_name, user_data = {}) {
         const params = _.extend({}, this._defaults, {
-            session_token: this._getSessionToken(),
+            session_token: this.getSessionToken(),
             event_name,
             browser: this._getBrowserDetails(),
             timestamp: (new Date()).getTime(),
@@ -153,6 +154,7 @@ class PvAnalytics {
             page_location: this._getPageUrl(),
             referring_url: this._getReferringUrl(),
             is_incognito: this._is_incognito,
+            query_params: this._getQueryParams(),
             user_data
         });
 
@@ -164,6 +166,21 @@ class PvAnalytics {
 
         return axios.post(`${this.base_url}/event`, params)
             .catch((error) => this._log(error));
+    }
+
+    _getQueryParams() {
+        let query = {};
+
+        if (this._app && this._app.$route) {
+            query = _.extend(query, this._app.$route.query);
+        }
+
+        if (typeof window === "object" && typeof URLSearchParams === "function") {
+            (new URLSearchParams(window.location.search))
+                .forEach((value, key) => query[key] = value.replace(/\/$/, ""));
+        }
+
+        return query;
     }
 
     _pageLoadTime() {

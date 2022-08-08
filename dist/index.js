@@ -78,6 +78,7 @@ var PvAnalytics = /*#__PURE__*/function () {
 
     _classCallCheck(this, PvAnalytics);
 
+    this._app = opitons.app;
     this._defaults = {};
     this._debug = !!options.debug;
     this._is_enabled = false;
@@ -175,6 +176,11 @@ var PvAnalytics = /*#__PURE__*/function () {
       }
     }
   }, {
+    key: "getSessionToken",
+    value: function getSessionToken() {
+      return cookie__default["default"].get(SESSION_COOKIE_NAME);
+    }
+  }, {
     key: "_processQueuedEvents",
     value: function _processQueuedEvents() {
       while (this._event_queue.length > 0) {
@@ -188,7 +194,7 @@ var PvAnalytics = /*#__PURE__*/function () {
     value: function _startSession() {
       var _this2 = this;
 
-      var session_token = this._getSessionToken();
+      var session_token = this.getSessionToken();
 
       if (session_token) {
         var parts = atob(session_token).split(".");
@@ -231,11 +237,6 @@ var PvAnalytics = /*#__PURE__*/function () {
       cookie__default["default"].remove(SESSION_COOKIE_NAME);
     }
   }, {
-    key: "_getSessionToken",
-    value: function _getSessionToken() {
-      return cookie__default["default"].get(SESSION_COOKIE_NAME);
-    }
-  }, {
     key: "_sendEvent",
     value: function _sendEvent(event_name) {
       var _this3 = this;
@@ -243,7 +244,7 @@ var PvAnalytics = /*#__PURE__*/function () {
       var user_data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
       var params = ___default["default"].extend({}, this._defaults, {
-        session_token: this._getSessionToken(),
+        session_token: this.getSessionToken(),
         event_name: event_name,
         browser: this._getBrowserDetails(),
         timestamp: new Date().getTime(),
@@ -251,6 +252,7 @@ var PvAnalytics = /*#__PURE__*/function () {
         page_location: this._getPageUrl(),
         referring_url: this._getReferringUrl(),
         is_incognito: this._is_incognito,
+        query_params: this._getQueryParams(),
         user_data: user_data
       });
 
@@ -263,6 +265,23 @@ var PvAnalytics = /*#__PURE__*/function () {
       return axios__namespace.post("".concat(this.base_url, "/event"), params)["catch"](function (error) {
         return _this3._log(error);
       });
+    }
+  }, {
+    key: "_getQueryParams",
+    value: function _getQueryParams() {
+      var query = {};
+
+      if (this._app && this._app.$route) {
+        query = ___default["default"].extend(query, this._app.$route.query);
+      }
+
+      if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object" && typeof URLSearchParams === "function") {
+        new URLSearchParams(window.location.search).forEach(function (value, key) {
+          return query[key] = value.replace(/\/$/, "");
+        });
+      }
+
+      return query;
     }
   }, {
     key: "_pageLoadTime",
