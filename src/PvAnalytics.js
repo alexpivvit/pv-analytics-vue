@@ -217,6 +217,13 @@ class PvAnalytics {
     }
 
     _getReferringUrl() {
+        if (this._app &&
+            this._app.$route &&
+            this._app.$route.query.referrer
+        ) {
+            return this._app.$route.query.referrer;
+        }
+
         if (document) {
             return document.referrer;
         }
