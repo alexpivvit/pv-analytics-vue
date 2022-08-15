@@ -1,5 +1,5 @@
 
-import PvAnalytics from "./PvAnalytics";
+import PvAnalytics from "pv-analytics";
 
 export default {
     install(Vue, options = {}) {
