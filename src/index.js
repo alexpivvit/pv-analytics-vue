@@ -4,7 +4,7 @@ import PvAnalytics from "pv-analytics";
 export default {
     install(Vue, options = {}) {
         Vue.prototype.$pvAnalytics = new PvAnalytics(options);
-        Vue.prototype.$pvAnalytics.init();
+        Vue.prototype.$pvAnalytics.promise = Vue.prototype.$pvAnalytics.init();
 
         if (options.track_errors) {
             Vue.mixin({
