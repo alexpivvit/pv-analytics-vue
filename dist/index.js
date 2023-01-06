@@ -20,7 +20,7 @@ var index = {
   install: function install(Vue) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     Vue.prototype.$pvAnalytics = new PvAnalytics__default["default"](options);
-    Vue.prototype.$pvAnalytics.init();
+    Vue.prototype.$pvAnalytics.promise = Vue.prototype.$pvAnalytics.init();
 
     if (options.track_errors) {
       Vue.mixin({
