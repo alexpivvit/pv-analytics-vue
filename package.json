@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "Alex Pivvit",
   "dependencies": {
-    "pv-analytics": "git+https://github.com/alexpivvit/pv-analytics.git#v1.2.7"
+    "pv-analytics": "git+https://github.com/alexpivvit/pv-analytics.git#v1.2.8"
   },
   "files": [
     "dist/*"
