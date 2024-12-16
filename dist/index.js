@@ -6,14 +6,14 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var PvAnalytics__default = /*#__PURE__*/_interopDefaultLegacy(PvAnalytics);
 
-function _typeof(obj) {
+function _typeof(o) {
   "@babel/helpers - typeof";
 
-  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-    return typeof obj;
-  } : function (obj) {
-    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-  }, _typeof(obj);
+  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+    return typeof o;
+  } : function (o) {
+    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+  }, _typeof(o);
 }
 
 var index = {
@@ -21,7 +21,6 @@ var index = {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     Vue.prototype.$pvAnalytics = new PvAnalytics__default["default"](options);
     Vue.prototype.$pvAnalytics.promise = Vue.prototype.$pvAnalytics.init();
-
     if (options.track_errors) {
       Vue.mixin({
         errorCaptured: function errorCaptured(err, vm, info) {
@@ -33,12 +32,10 @@ var index = {
               info: info
             });
           }
-
           return true;
         }
       });
     }
-
     if (options.track_leave && (typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") {
       window.addEventListener("beforeunload", function () {
         if (Vue.prototype.$pvAnalytics) {
@@ -48,7 +45,6 @@ var index = {
         capture: true
       });
     }
-
     if (options.track_clicks && (typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") {
       window.addEventListener("click", function (e) {
         if (Vue.prototype.$pvAnalytics) {
